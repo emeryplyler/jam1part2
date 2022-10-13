@@ -172,10 +172,22 @@ function update() {
         }
 
         // if fish collides with player and player is jumping
-        // add collision for dogs
         const fishCollision = char("b", f.pos).isColliding.char.a;
         if (fishCollision && player.isJumping) {
             addScore(1); // add to score
+	    play("hit");
+	
+	    color("purple"); // purple particles
+	    particle(
+		player.pos.x,
+		player.pos.y - 3, // a little bit above player
+		4,
+		1,
+		-PI/2,
+		PI/2,
+	    );
+	    
+	    color("black"); // setting color to black means default colors
             return true; // delete fish
         } else {
             return false;
