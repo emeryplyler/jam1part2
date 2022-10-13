@@ -1,6 +1,11 @@
 title = "Kitty";
 
-description = `Kitty game`;
+description = `
+    Kitty game
+    Dont touch the 
+    dogs and don't 
+    let the fish 
+    escape!`;
 
 characters = [
 `
@@ -15,7 +20,14 @@ cccccc
  pp p
 pypp
  pp p
+`,
 `
+p p
+ p   p 
+ pppp
+  p p
+`,
+
 ];
 
 // Game design variable container
@@ -40,6 +52,7 @@ const G = {
 };
 
 // Game runtime options
+// Refer to the official documentation for all available options
 options = {
 	viewSize: {x: G.WIDTH, y: G.HEIGHT},
     isCapturing: true,
@@ -85,7 +98,7 @@ let fishes;
 /**
  * @type { number }
  */
-const fishspeed = 0.2;
+let fishspeed = 0.2;
 
 /**
  * @type { number }
@@ -96,6 +109,7 @@ const fishspeed = 0.2;
  * @type { number }
  */
 let counter = 0;
+let dogs;
 
 function update() {
 	if (!ticks) {
@@ -106,11 +120,14 @@ function update() {
 			isJumping: false,
 			vx: 0,
 			vy: 0,
+            // firingCooldown: G.PLAYER_FIRE_RATE,
+            // isFiringLeft: true
         };
 		fish = {
 			pos: vec(0, G.HEIGHT * 0.5 - fishoffset),
 		};
 		fishes = [];
+        dogs = [];
 	}
 
 	counter++; // increment counter
@@ -128,48 +145,77 @@ function update() {
 		if (input.isJustPressed) {
 			player.vy = -1;           // initial upward velocity
 			player.isJumping = true;
+			// addScore(1);
 		}
 	}
 
+	// move player back and forth x
+
+	// for (let i = 0; i < fishes.length; i++) {
+	// 	let thisFish = char("b", fishes[i].pos);     // draw fish
+	// 	fishes[i].pos.y += fishspeed; // move fish down
+		
+	// 	if (fishes[i].pos.y >= G.HEIGHT) {
+	// 		end("Game over :(");      // fish dropped
+	// 	}
+
+	// 	// if fish collides with player and player is jumping,
+	// 	const fishCollision = thisFish.isColliding.char.a;
+	// 	if (fishCollision) {
+	// 		addScore(1);
+	// 		remove(thisFish, );
+	// 	}
+	// 	// raise score and delete fish
+	// 	// remove()
+	// }
+
+	
 	if (counter == 64) {
 		const posX = G.WIDTH;
 		const posY = (G.HEIGHT * 0.5) - fishoffset + rnd(0, 3);
-		fishes.push({ pos: vec(posX, posY) });
+        // add if statement to make it half dogs and half cats
+        if (rnd(0, 10)>5){
+            fishes.push({ pos: vec(posX, posY) });
+        } else{
+            dogs.push({ pos: vec(posX, posY) });
+        }
+        fishspeed *= difficulty;
 	}
 	
 	// player.pos = vec(input.pos.x, input.pos.y);
 	player.pos.clamp(0, G.WIDTH, 0, G.HEIGHT);
 	char("a", player.pos);
 
+    remove(fishes, (f) => {
+        // let thisFish = char("b", f.pos);    // draw fish
+        f.pos.x -= fishspeed;               // move fish 
+        
+        if (f.pos.x <= 0) {
+            end("Game over :("); // fish escape
+        }
 
-	remove(fishes, (f) => {
-		f.pos.x -= fishspeed; // move fish 
-		
-		if (f.pos.x <= 0) {
-			end("Game over :("); // fish escape
-		}
+        // if fish collides with player and player is jumping
+        // add collision for dogs
+        const fishCollision = char("b", f.pos).isColliding.char.a;
+        if (fishCollision && player.isJumping) {
+            addScore(1); // add to score
+            return true; // delete fish
+        } else {
+            return false;
+        }
+    });
+    remove(dogs, (g) => {
+        // let thisFish = char("b", f.pos);    // draw fish
+        g.pos.x -= fishspeed;               // move fish 
 
-		// if fish collides with player and player is jumping
-		const fishCollision = char("b", f.pos).isColliding.char.a;
-		if (fishCollision && player.isJumping) {
-			addScore(1); // add to score
-			play("hit"); // sound effect
-
-			color("purple"); // purple particles
-			particle(
-				player.pos.x,
-				player.pos.y - 3, // a little bit above player
-				4,
-				1,
-				-PI/2,
-				PI/2,
-			);
-			color("black"); // setting color to black means default colors
-
-			return true; // delete fish
-		} else {
-			return false;
-		}
-	});
+        // if fish collides with player and player is jumping
+        // add collision for dogs
+        const dogCollision = char("c", g.pos).isColliding.char.a;
+        if (dogCollision && player.isJumping) {
+            end("Game Over");
+        } else {
+            return false;
+        }
+    });
+    
 }
-
