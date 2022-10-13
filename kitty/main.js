@@ -120,8 +120,6 @@ function update() {
 			isJumping: false,
 			vx: 0,
 			vy: 0,
-            // firingCooldown: G.PLAYER_FIRE_RATE,
-            // isFiringLeft: true
         };
 		fish = {
 			pos: vec(0, G.HEIGHT * 0.5 - fishoffset),
@@ -148,27 +146,6 @@ function update() {
 			// addScore(1);
 		}
 	}
-
-	// move player back and forth x
-
-	// for (let i = 0; i < fishes.length; i++) {
-	// 	let thisFish = char("b", fishes[i].pos);     // draw fish
-	// 	fishes[i].pos.y += fishspeed; // move fish down
-		
-	// 	if (fishes[i].pos.y >= G.HEIGHT) {
-	// 		end("Game over :(");      // fish dropped
-	// 	}
-
-	// 	// if fish collides with player and player is jumping,
-	// 	const fishCollision = thisFish.isColliding.char.a;
-	// 	if (fishCollision) {
-	// 		addScore(1);
-	// 		remove(thisFish, );
-	// 	}
-	// 	// raise score and delete fish
-	// 	// remove()
-	// }
-
 	
 	if (counter == 64) {
 		const posX = G.WIDTH;
