@@ -40,7 +40,6 @@ const G = {
 };
 
 // Game runtime options
-// Refer to the official documentation for all available options
 options = {
 	viewSize: {x: G.WIDTH, y: G.HEIGHT},
     isCapturing: true,
@@ -107,8 +106,6 @@ function update() {
 			isJumping: false,
 			vx: 0,
 			vy: 0,
-            // firingCooldown: G.PLAYER_FIRE_RATE,
-            // isFiringLeft: true
         };
 		fish = {
 			pos: vec(0, G.HEIGHT * 0.5 - fishoffset),
@@ -131,31 +128,8 @@ function update() {
 		if (input.isJustPressed) {
 			player.vy = -1;           // initial upward velocity
 			player.isJumping = true;
-			// addScore(1);
 		}
 	}
-
-	// move player back and forth x
-
-	// for (let i = 0; i < fishes.length; i++) {
-	// 	let thisFish = char("b", fishes[i].pos);     // draw fish
-	// 	fishes[i].pos.y += fishspeed; // move fish down
-		
-	// 	if (fishes[i].pos.y >= G.HEIGHT) {
-	// 		end("Game over :(");      // fish dropped
-	// 	}
-
-	// 	// if fish collides with player and player is jumping,
-	// 	const fishCollision = thisFish.isColliding.char.a;
-	// 	if (fishCollision) {
-	// 		addScore(1);
-	// 		remove(thisFish, );
-	// 	}
-	// 	// raise score and delete fish
-	// 	// remove()
-	// }
-
-	
 
 	if (counter == 64) {
 		const posX = G.WIDTH;
@@ -169,8 +143,7 @@ function update() {
 
 
 	remove(fishes, (f) => {
-		// let thisFish = char("b", f.pos);    // draw fish
-		f.pos.x -= fishspeed;               // move fish 
+		f.pos.x -= fishspeed; // move fish 
 		
 		if (f.pos.x <= 0) {
 			end("Game over :("); // fish escape
@@ -180,6 +153,19 @@ function update() {
 		const fishCollision = char("b", f.pos).isColliding.char.a;
 		if (fishCollision && player.isJumping) {
 			addScore(1); // add to score
+			play("hit"); // sound effect
+
+			color("purple"); // purple particles
+			particle(
+				player.pos.x,
+				player.pos.y - 3, // a little bit above player
+				4,
+				1,
+				-PI/2,
+				PI/2,
+			);
+			color("black"); // setting color to black means default colors
+
 			return true; // delete fish
 		} else {
 			return false;
